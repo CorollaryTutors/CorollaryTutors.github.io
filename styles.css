@@ -326,6 +326,53 @@ img, svg { display: block; max-width: 100%; }
   50%      { transform: translateX(-50%) translateY(6px); opacity: 0.6; }
 }
 
+/* Hero sketch animation
+   Sits between the CTA and the scroll cue. 16:9, max 560px, fades in
+   after the hero cascade settles. */
+.hero__animation {
+  width: 100%;
+  max-width: 560px;
+  margin: 2.75rem auto 0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+.hero__animation-frame {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+.hero__animation-frame svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hero__animation-frame.is-playing {
+  /* the JS adds is-playing right before the animation starts, which
+     triggers the container fade-in. Keeps the entrance in sync with
+     the animation kickoff without JS having to touch inline styles. */
+}
+.hero__animation:has(.is-playing) {
+  opacity: 1;
+  transform: none;
+}
+
+/* Mobile: shrink margin so the animation doesn't push the scroll cue
+   too far down. */
+@media (max-width: 640px) {
+  .hero__animation { margin-top: 2rem; max-width: 100%; }
+}
+
+/* Respect reduced motion — no fade transition, show final frame from
+   the start. The JS already jumps to the settled last frame in this
+   case; here we just make the container appear immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__animation {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* ── Buttons ─────────────────────────────────────────────── */
 
 .btn {
