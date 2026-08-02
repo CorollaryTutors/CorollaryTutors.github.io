@@ -4,23 +4,12 @@
 ============================================================ */
 
 document.addEventListener('DOMContentLoaded', function () {
-
-  /* Problem-submission form — placeholder handler.
-     TODO: wire to Formspree by replacing the setTimeout block below with:
-
-     const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-       method: 'POST',
-       headers: { 'Accept': 'application/json' },
-       body: new FormData(form),
-     });
-
-     Sign up at https://formspree.io — free tier allows 50 submissions/month.
-  */
   const form = document.getElementById('submit-form');
   const status = document.getElementById('form-status');
 
   if (form && status) {
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', async function (e) {
+      // Prevents the page from redirecting to Formspree's default thank-you page
       e.preventDefault();
 
       const problem = form.querySelector('#problem').value.trim();
@@ -31,12 +20,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
       status.textContent = 'Sending…';
 
-      // Placeholder — replace with real Formspree call.
-      setTimeout(function () {
-        status.textContent = 'Got it. I\'ll take a look and reach out if it becomes a video.';
-        form.reset();
-      }, 700);
+      // Send the data to Formspree behind the scenes
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form),
+        });
+
+        if (response.ok) {
+          status.textContent = 'Got it. I\'ll take a look and reach out if it becomes a video.';
+          form.reset();
+        } else {
+          status.textContent = 'Oops! There was a problem submitting your form.';
+        }
+      } catch (error) {
+        status.textContent = 'Oops! Check your internet connection and try again.';
+      }
     });
   }
-
 });
