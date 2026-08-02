@@ -239,6 +239,7 @@ img, svg { display: block; max-width: 100%; }
 .hero__inner {
   max-width: 720px;
   width: 100%;
+  transform: translateY(-3rem); /* Negative values move it UP */
 }
 
 .hero__mark {
